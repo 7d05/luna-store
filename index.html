@@ -485,6 +485,27 @@
       .discord-card { padding: 2.5rem 1.75rem; }
       .footer-inner { justify-content: center; text-align: center; }
     }
+    .feature-card.coming-soon {
+      border-style: dashed;
+      opacity: 0.75;
+    }
+    .coming-soon-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(79,142,247,0.1);
+      border: 1px solid rgba(79,142,247,0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+      margin-bottom: 0.75rem;
+    }
+    [data-theme="light"] .coming-soon-badge {
+      background: rgba(37,99,235,0.07);
+      border-color: rgba(37,99,235,0.2);
+    }
   </style>
 </head>
 <body>
@@ -532,12 +553,12 @@
   <section class="stats-section">
     <div class="stats-grid">
       <div class="stat-item">
-        <span class="stat-number">50+</span>
-        <div class="stat-label">Practice Kits</div>
+        <span class="stat-number">FFA</span>
+        <div class="stat-label">Free For All</div>
       </div>
       <div class="stat-item">
-        <span class="stat-number">1v1</span>
-        <div class="stat-label">Player Duels</div>
+        <span class="stat-number">More</span>
+        <div class="stat-label">Modes Coming Soon</div>
       </div>
       <div class="stat-item">
         <span class="stat-number">24/7</span>
@@ -562,16 +583,17 @@
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           </div>
-          <h3>FFA & Practice Arenas</h3>
-          <p>Warm up in free-for-all zones or jump into isolated practice arenas. Perfect for grinding combos and sharpening your aim.</p>
+          <h3>Free For All</h3>
+          <p>Jump straight into FFA and fight anyone, anytime. No queues, no wait — just raw PvP. The perfect place to grind combos and sharpen your aim.</p>
         </div>
 
-        <div class="feature-card">
+        <div class="feature-card coming-soon">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
           </div>
-          <h3>Multiple Game Modes</h3>
-          <p>Nodebuff, Boxing, Debuff, Archer, Sumo, Build UHC, and more — all with carefully tuned kits to keep it fair.</p>
+          <span class="coming-soon-badge">Coming Soon</span>
+          <h3>More Game Modes</h3>
+          <p>Nodebuff, Boxing, Sumo, Archer and more are on the way. Stay tuned — we're actively working on expanding what Luna has to offer.</p>
         </div>
 
         <div class="feature-card">
