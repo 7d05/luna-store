@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Moonveil SMP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --accent-purple: #8b5cf6;
+            --accent-purple-light: #a78bfa;
+            --accent-blue: #3b82f6;
+            --accent-blue-light: #60a5fa;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --glass-bg: rgba(26, 26, 46, 0.7);
+            --glass-border: rgba(139, 92, 246, 0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-primary);
+        }
+
+        .login-box {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 400px;
+            width: 90%;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-box h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--accent-purple-light), var(--accent-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .dashboard {
+            display: none;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+            background: linear-gradient(135deg, var(--accent-purple-light), var(--accent-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logout-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .appeals-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .appeal-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .appeal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .appeal-type {
+            background: var(--accent-purple);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status.pending {
+            background: var(--warning);
+            color: #000;
+        }
+
+        .status.approved {
+            background: var(--success);
+            color: #000;
+        }
+
+        .status.denied {
+            background: var(--danger);
+        }
+
+        .appeal-info {
+            margin-bottom: 1rem;
+        }
+
+        .appeal-info p {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .appeal-info strong {
+            color: var(--text-primary);
+        }
+
+        .appeal-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .approve-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--success);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .approve-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .deny-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--danger);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .deny-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .delete-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+            color: var(--danger);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: var(--danger);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .denial-reason {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            border: 1px solid var(--danger);
+            display: none;
+        }
+
+        .denial-reason textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .denial-reason textarea:focus {
+            outline: none;
+        }
+
+        .submit-deny-btn {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--danger);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-deny-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .error {
+            color: var(--danger);
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .no-appeals {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 3rem;
+        }
+
+        .staff-management {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .staff-management h2 {
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-purple-light), var(--accent-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .create-staff {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .create-staff h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .staff-list h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .staff-item {
+            background: var(--bg-tertiary);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .staff-item span {
+            color: var(--text-primary);
+        }
+
+        .staff-item small {
+            color: var(--text-secondary);
+        }
+
+        .create-announcement {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .create-announcement h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .create-announcement textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .create-announcement textarea:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .announcement-list h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .announcement-item {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-item h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-item p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-item .announcement-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .announcement-item button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .announcement-item .enable-btn {
+            background: var(--success);
+            color: #000;
+        }
+
+        .announcement-item .disable-btn {
+            background: var(--warning);
+            color: #000;
+        }
+
+        .announcement-item .delete-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .create-faq {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .create-faq h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .create-faq textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .create-faq textarea:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .faq-list h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .faq-item {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-item h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-item p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-item .faq-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .faq-item button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item .enable-btn {
+            background: var(--success);
+            color: #000;
+        }
+
+        .faq-item .disable-btn {
+            background: var(--warning);
+            color: #000;
+        }
+
+        .faq-item .delete-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .status-management {
+            margin-bottom: 1.5rem;
+        }
+
+        .status-management h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        #current-status-display {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        #current-status-display .status-indicator {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        #current-status-display .status-indicator.online {
+            background: var(--success);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        #current-status-display .status-indicator.no_issues {
+            background: var(--info);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        #current-status-display .status-indicator.maintenance {
+            background: var(--warning);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        #current-status-display .status-indicator.offline {
+            background: var(--danger);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        #current-status-display .status-indicator.custom {
+            background: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        #current-status-display .status-text {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        #current-status-display .status-message {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .status-management textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .status-management textarea:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="login-page">
+        <div class="login-box">
+            <h1>Staff Login</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div class="error" id="login-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <h1>Staff Dashboard</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        
+        <!-- Staff Management -->
+        <div class="staff-management">
+            <h2>Staff Management</h2>
+            <div class="create-staff">
+                <h3>Create New Staff Account</h3>
+                <form id="create-staff-form">
+                    <div class="form-group">
+                        <label for="new-username">Username</label>
+                        <input type="text" id="new-username" name="new-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">Password</label>
+                        <input type="password" id="new-password" name="new-password" required>
+                    </div>
+                    <div class="form-group" id="role-group">
+                        <label for="new-role">Role</label>
+                        <select id="new-role" name="new-role">
+                            <option value="staff">Staff</option>
+                            <option value="owner">Owner</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Create Staff</button>
+                </form>
+            </div>
+            <div class="staff-list">
+                <h3>Current Staff</h3>
+                <div id="staff-list"></div>
+            </div>
+        </div>
+        
+        <!-- Announcement Management -->
+        <div class="staff-management">
+            <h2>Announcement Management</h2>
+            <div class="create-announcement">
+                <h3>Create New Announcement</h3>
+                <form id="create-announcement-form">
+                    <div class="form-group">
+                        <label for="announcement-title">Title</label>
+                        <input type="text" id="announcement-title" name="announcement-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="announcement-content">Content</label>
+                        <textarea id="announcement-content" name="announcement-content" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Create Announcement</button>
+                </form>
+            </div>
+            <div class="announcement-list">
+                <h3>Current Announcements</h3>
+                <div id="announcement-list"></div>
+            </div>
+        </div>
+        
+        <!-- FAQ Management -->
+        <div class="staff-management">
+            <h2>FAQ Management</h2>
+            <div class="create-faq">
+                <h3>Create New FAQ</h3>
+                <form id="create-faq-form">
+                    <div class="form-group">
+                        <label for="faq-question">Question</label>
+                        <input type="text" id="faq-question" name="faq-question" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="faq-answer">Answer</label>
+                        <textarea id="faq-answer" name="faq-answer" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Create FAQ</button>
+                </form>
+            </div>
+            <div class="faq-list">
+                <h3>Current FAQs</h3>
+                <div id="faq-list"></div>
+            </div>
+        </div>
+        
+        <!-- Server Status Management -->
+        <div class="staff-management">
+            <h2>Server Status Management</h2>
+            <div class="status-management">
+                <h3>Current Status</h3>
+                <div id="current-status-display"></div>
+                <form id="status-form">
+                    <div class="form-group">
+                        <label for="status-select">Status</label>
+                        <select id="status-select" name="status-select" required>
+                            <option value="online">Online</option>
+                            <option value="no_issues">No Issues</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="offline">Offline</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="status-message">Message</label>
+                        <textarea id="status-message" name="status-message" placeholder="Enter status message..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">Update Status</button>
+                </form>
+            </div>
+        </div>
+        
+        <h2>Appeals</h2>
+        <div class="appeals-grid" id="appeals-grid">
+            <!-- Appeals will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        let authToken = localStorage.getItem('staffToken');
+        let userRole = localStorage.getItem('staffRole');
+
+        // Check if already logged in
+        if (authToken) {
+            showDashboard();
+        }
+
+        // Login form
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/staff/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    localStorage.setItem('staffToken', result.username);
+                    localStorage.setItem('staffRole', result.role);
+                    authToken = result.username;
+                    userRole = result.role;
+                    showDashboard();
+                } else {
+                    document.getElementById('login-error').textContent = result.error;
+                }
+            } catch (error) {
+                document.getElementById('login-error').textContent = 'Login failed';
+            }
+        });
+
+        function showDashboard() {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            
+            // Show/hide staff management based on role
+            const staffManagement = document.querySelector('.staff-management');
+            if (userRole === 'owner') {
+                staffManagement.style.display = 'block';
+            } else {
+                staffManagement.style.display = 'none';
+            }
+            
+            loadStaff();
+            loadAnnouncements();
+            loadFAQs();
+            loadServerStatus();
+            loadAppeals();
+        }
+
+        function logout() {
+            localStorage.removeItem('staffToken');
+            localStorage.removeItem('staffRole');
+            authToken = null;
+            userRole = null;
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('login-page').style.display = 'flex';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        async function loadStaff() {
+            try {
+                const response = await fetch('/api/staff');
+                const staff = await response.json();
+                renderStaff(staff);
+            } catch (error) {
+                console.error('Error loading staff:', error);
+            }
+        }
+
+        function renderStaff(staff) {
+            const staffList = document.getElementById('staff-list');
+            staffList.innerHTML = staff.map(member => `
+                <div class="staff-item">
+                    <span>${member.username} <small>(${member.role})</small></span>
+                    <small>Created: ${new Date(member.created_at).toLocaleDateString()}</small>
+                </div>
+            `).join('');
+        }
+
+        // Create staff form
+        document.getElementById('create-staff-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('new-username').value;
+            const password = document.getElementById('new-password').value;
+            const role = document.getElementById('new-role').value;
+
+            try {
+                const response = await fetch('/api/staff/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, role })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Staff account created successfully');
+                    document.getElementById('new-username').value = '';
+                    document.getElementById('new-password').value = '';
+                    loadStaff();
+                } else {
+                    showNotification(result.error || 'Failed to create staff account');
+                }
+            } catch (error) {
+                showNotification('Error creating staff account');
+            }
+        });
+
+        // Create announcement form
+        document.getElementById('create-announcement-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('announcement-title').value;
+            const content = document.getElementById('announcement-content').value;
+
+            try {
+                const response = await fetch('/api/announcements', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, content })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Announcement created successfully');
+                    document.getElementById('announcement-title').value = '';
+                    document.getElementById('announcement-content').value = '';
+                    loadAnnouncements();
+                } else {
+                    showNotification(result.error || 'Failed to create announcement');
+                }
+            } catch (error) {
+                showNotification('Error creating announcement');
+            }
+        });
+
+        // Create FAQ form
+        document.getElementById('create-faq-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const question = document.getElementById('faq-question').value;
+            const answer = document.getElementById('faq-answer').value;
+
+            try {
+                const response = await fetch('/api/faqs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question, answer })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('FAQ created successfully');
+                    document.getElementById('faq-question').value = '';
+                    document.getElementById('faq-answer').value = '';
+                    loadFAQs();
+                } else {
+                    showNotification(result.error || 'Failed to create FAQ');
+                }
+            } catch (error) {
+                showNotification('Error creating FAQ');
+            }
+        });
+
+        // Status form
+        document.getElementById('status-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const status = document.getElementById('status-select').value;
+            const message = document.getElementById('status-message').value;
+
+            try {
+                const response = await fetch('/api/server-status', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status, message })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Server status updated successfully');
+                    loadServerStatus();
+                } else {
+                    showNotification(result.error || 'Failed to update server status');
+                }
+            } catch (error) {
+                showNotification('Error updating server status');
+            }
+        });
+
+        async function loadAnnouncements() {
+            try {
+                const response = await fetch('/api/announcements/all');
+                const announcements = await response.json();
+                renderAnnouncements(announcements);
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+            }
+        }
+
+        function renderAnnouncements(announcements) {
+            const announcementList = document.getElementById('announcement-list');
+            announcementList.innerHTML = announcements.map(announcement => `
+                <div class="announcement-item">
+                    <h4>${announcement.title}</h4>
+                    <p>${announcement.content}</p>
+                    <small>Status: ${announcement.enabled ? 'Enabled' : 'Disabled'}</small>
+                    <div class="announcement-actions">
+                        <button class="${announcement.enabled ? 'disable-btn' : 'enable-btn'}" onclick="toggleAnnouncement(${announcement.id}, ${announcement.enabled})">
+                            ${announcement.enabled ? 'Disable' : 'Enable'}
+                        </button>
+                        <button class="delete-btn" onclick="deleteAnnouncement(${announcement.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function toggleAnnouncement(id, currentStatus) {
+            try {
+                const response = await fetch(`/api/announcements/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        title: 'placeholder', 
+                        content: 'placeholder',
+                        enabled: !currentStatus 
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Announcement updated successfully');
+                    loadAnnouncements();
+                } else {
+                    showNotification('Failed to update announcement');
+                }
+            } catch (error) {
+                showNotification('Error updating announcement');
+            }
+        }
+
+        async function deleteAnnouncement(id) {
+            if (!confirm('Are you sure you want to delete this announcement?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/announcements/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Announcement deleted successfully');
+                    loadAnnouncements();
+                } else {
+                    showNotification('Failed to delete announcement');
+                }
+            } catch (error) {
+                showNotification('Error deleting announcement');
+            }
+        }
+
+        async function loadFAQs() {
+            try {
+                const response = await fetch('/api/faqs/all');
+                const faqs = await response.json();
+                renderFAQs(faqs);
+            } catch (error) {
+                console.error('Error loading FAQs:', error);
+            }
+        }
+
+        function renderFAQs(faqs) {
+            const faqList = document.getElementById('faq-list');
+            faqList.innerHTML = faqs.map(faq => `
+                <div class="faq-item">
+                    <h4>${faq.question}</h4>
+                    <p>${faq.answer}</p>
+                    <small>Status: ${faq.enabled ? 'Enabled' : 'Disabled'}</small>
+                    <div class="faq-actions">
+                        <button class="${faq.enabled ? 'disable-btn' : 'enable-btn'}" onclick="toggleFAQ(${faq.id}, ${faq.enabled})">
+                            ${faq.enabled ? 'Disable' : 'Enable'}
+                        </button>
+                        <button class="delete-btn" onclick="deleteFAQ(${faq.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function toggleFAQ(id, currentStatus) {
+            try {
+                const response = await fetch(`/api/faqs/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        question: 'placeholder', 
+                        answer: 'placeholder',
+                        enabled: !currentStatus 
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('FAQ updated successfully');
+                    loadFAQs();
+                } else {
+                    showNotification('Failed to update FAQ');
+                }
+            } catch (error) {
+                showNotification('Error updating FAQ');
+            }
+        }
+
+        async function deleteFAQ(id) {
+            if (!confirm('Are you sure you want to delete this FAQ?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/faqs/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('FAQ deleted successfully');
+                    loadFAQs();
+                } else {
+                    showNotification('Failed to delete FAQ');
+                }
+            } catch (error) {
+                showNotification('Error deleting FAQ');
+            }
+        }
+
+        async function loadServerStatus() {
+            try {
+                const response = await fetch('/api/server-status');
+                const status = await response.json();
+                renderServerStatus(status);
+            } catch (error) {
+                console.error('Error loading server status:', error);
+            }
+        }
+
+        function renderServerStatus(status) {
+            const statusDisplay = document.getElementById('current-status-display');
+            
+            const statusLabels = {
+                online: 'Online',
+                no_issues: 'No Issues',
+                maintenance: 'Maintenance',
+                offline: 'Offline',
+                custom: 'Custom Status'
+            };
+
+            const statusIcons = {
+                online: '✓',
+                no_issues: '✓',
+                maintenance: '⚙',
+                offline: '✕',
+                custom: '★'
+            };
+
+            statusDisplay.innerHTML = `
+                <div class="status-indicator ${status.status}">
+                    ${statusIcons[status.status] || '★'}
+                </div>
+                <div class="status-text">${statusLabels[status.status] || 'Custom Status'}</div>
+                <div class="status-message">${status.message || 'No additional information'}</div>
+            `;
+
+            // Update form values
+            document.getElementById('status-select').value = status.status;
+            document.getElementById('status-message').value = status.message || '';
+        }
+
+        async function loadAppeals() {
+            try {
+                const response = await fetch('/api/appeals');
+                const appeals = await response.json();
+                renderAppeals(appeals);
+            } catch (error) {
+                console.error('Error loading appeals:', error);
+            }
+        }
+
+        function renderAppeals(appeals) {
+            const grid = document.getElementById('appeals-grid');
+            
+            if (appeals.length === 0) {
+                grid.innerHTML = '<div class="no-appeals">No appeals to review</div>';
+                return;
+            }
+
+            grid.innerHTML = appeals.map(appeal => `
+                <div class="appeal-card" id="appeal-${appeal.id}">
+                    <div class="appeal-header">
+                        <span class="appeal-type">${appeal.appeal_type.charAt(0).toUpperCase() + appeal.appeal_type.slice(1)} Appeal</span>
+                        <span class="status ${appeal.status}">${appeal.status.charAt(0).toUpperCase() + appeal.status.slice(1)}</span>
+                    </div>
+                    <div class="appeal-info">
+                        <p><strong>Player:</strong> ${appeal.minecraft_username}</p>
+                        <p><strong>Punishment Reason:</strong> ${appeal.punishment_reason}</p>
+                        <p><strong>Appeal Reason:</strong> ${appeal.appeal_reason}</p>
+                        ${appeal.additional_info ? `<p><strong>Additional Info:</strong> ${appeal.additional_info}</p>` : ''}
+                        ${appeal.email ? `<p><strong>Email:</strong> ${appeal.email}</p>` : ''}
+                        <p><strong>Submitted:</strong> ${new Date(appeal.created_at).toLocaleString()}</p>
+                        ${appeal.denial_reason ? `<p><strong>Denial Reason:</strong> ${appeal.denial_reason}</p>` : ''}
+                    </div>
+                    ${appeal.status === 'pending' ? `
+                        <div class="appeal-actions">
+                            <button class="approve-btn" onclick="approveAppeal(${appeal.id})">Approve</button>
+                            <button class="deny-btn" onclick="showDenyReason(${appeal.id})">Deny</button>
+                        </div>
+                        <div class="denial-reason" id="deny-reason-${appeal.id}">
+                            <textarea placeholder="Enter denial reason..." id="deny-text-${appeal.id}"></textarea>
+                            <button class="submit-deny-btn" onclick="denyAppeal(${appeal.id})">Submit Denial</button>
+                        </div>
+                    ` : `
+                        <div class="appeal-actions">
+                            <button class="delete-btn" onclick="deleteAppeal(${appeal.id})">Delete</button>
+                        </div>
+                    `}
+                </div>
+            `).join('');
+        }
+
+        async function approveAppeal(id) {
+            try {
+                const response = await fetch(`/api/appeals/${id}/approve`, {
+                    method: 'POST'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Appeal approved successfully');
+                    loadAppeals();
+                } else {
+                    showNotification('Failed to approve appeal');
+                }
+            } catch (error) {
+                showNotification('Error approving appeal');
+            }
+        }
+
+        function showDenyReason(id) {
+            const denyReasonDiv = document.getElementById(`deny-reason-${id}`);
+            denyReasonDiv.style.display = denyReasonDiv.style.display === 'block' ? 'none' : 'block';
+        }
+
+        async function denyAppeal(id) {
+            const reason = document.getElementById(`deny-text-${id}`).value;
+            
+            if (!reason.trim()) {
+                showNotification('Please enter a denial reason');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/appeals/${id}/deny`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ reason })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Appeal denied successfully');
+                    loadAppeals();
+                } else {
+                    showNotification('Failed to deny appeal');
+                }
+            } catch (error) {
+                showNotification('Error denying appeal');
+            }
+        }
+
+        async function deleteAppeal(id) {
+            if (!confirm('Are you sure you want to delete this appeal?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/appeals/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Appeal deleted successfully');
+                    loadAppeals();
+                } else {
+                    showNotification('Failed to delete appeal');
+                }
+            } catch (error) {
+                showNotification('Error deleting appeal');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

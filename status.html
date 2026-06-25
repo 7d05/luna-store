@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Status - Moonveil SMP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --accent-purple: #8b5cf6;
+            --accent-purple-light: #a78bfa;
+            --accent-blue: #3b82f6;
+            --accent-blue-light: #60a5fa;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Starfield background */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            opacity: var(--opacity);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--opacity); }
+            50% { opacity: 0.2; }
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, white, transparent);
+            animation: shoot var(--duration) linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0); opacity: 1; }
+            100% { transform: translateX(-500px) translateY(500px); opacity: 0; }
+        }
+
+        .status-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .status-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-purple-light), var(--accent-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-indicator {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .status-indicator.online {
+            background: var(--success);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+
+        .status-indicator.no_issues {
+            background: var(--info);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        }
+
+        .status-indicator.maintenance {
+            background: var(--warning);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+        }
+
+        .status-indicator.offline {
+            background: var(--danger);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+        }
+
+        .status-indicator.custom {
+            background: var(--accent-purple);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .status-text {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .status-message {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .last-updated {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--accent-purple-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-blue-light);
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div id="starfield"></div>
+    
+    <div class="status-container">
+        <h1>Moonveil SMP Server Status</h1>
+        
+        <div id="status-content" class="loading">
+            Loading server status...
+        </div>
+        
+        <a href="index.html" class="back-link">← Back to Store</a>
+    </div>
+
+    <script>
+        // Create starfield
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            const starCount = 200;
+            
+            // Create regular stars
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+                star.style.setProperty('--opacity', Math.random() * 0.7 + 0.3);
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starfield.appendChild(star);
+            }
+            
+            // Create shooting stars
+            for (let i = 0; i < 5; i++) {
+                const shootingStar = document.createElement('div');
+                shootingStar.className = 'shooting-star';
+                shootingStar.style.left = Math.random() * 50 + 50 + '%';
+                shootingStar.style.top = Math.random() * 50 + '%';
+                shootingStar.style.setProperty('--duration', (Math.random() * 5 + 5) + 's');
+                shootingStar.style.animationDelay = Math.random() * 10 + 's';
+                starfield.appendChild(shootingStar);
+            }
+        }
+
+        // Load server status
+        async function loadServerStatus() {
+            try {
+                const response = await fetch('/api/server-status');
+                const status = await response.json();
+                renderStatus(status);
+            } catch (error) {
+                console.error('Error loading server status:', error);
+                document.getElementById('status-content').innerHTML = '<p style="color: var(--danger);">Failed to load server status</p>';
+            }
+        }
+
+        function renderStatus(status) {
+            const statusContent = document.getElementById('status-content');
+            
+            const statusLabels = {
+                online: 'Online',
+                no_issues: 'No Issues',
+                maintenance: 'Maintenance',
+                offline: 'Offline',
+                custom: 'Custom Status'
+            };
+
+            const statusIcons = {
+                online: '✓',
+                no_issues: '✓',
+                maintenance: '⚙',
+                offline: '✕',
+                custom: '★'
+            };
+
+            statusContent.innerHTML = `
+                <div class="status-indicator ${status.status}">
+                    ${statusIcons[status.status] || '★'}
+                </div>
+                <div class="status-text">${statusLabels[status.status] || 'Custom Status'}</div>
+                <div class="status-message">${status.message || 'No additional information'}</div>
+                <div class="last-updated">Last updated: ${new Date(status.updated_at).toLocaleString()}</div>
+            `;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStarfield();
+            loadServerStatus();
+            
+            // Refresh status every 30 seconds
+            setInterval(loadServerStatus, 30000);
+        });
+    </script>
+</body>
+</html>

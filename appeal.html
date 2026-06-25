@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- SEO Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Moonveil SMP - Appeal Form">
+    <meta name="keywords" content="Minecraft, server, appeal, ban, mute, Moonveil SMP, gaming">
+    <meta name="author" content="Moonveil SMP">
+    <meta property="og:title" content="Moonveil SMP Appeal">
+    <meta property="og:description" content="Submit an appeal for your punishment">
+    <meta property="og:type" content="website">
+    <title>Moonveil SMP Appeal</title>
+    
+    <style>
+        /* ============================================
+           CSS RESET & BASE STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Color Palette - Dark Fantasy Theme */
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --accent-purple: #8b5cf6;
+            --accent-purple-light: #a78bfa;
+            --accent-blue: #3b82f6;
+            --accent-blue-light: #60a5fa;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --glow-purple: rgba(139, 92, 246, 0.5);
+            --glow-blue: rgba(59, 130, 246, 0.5);
+            --glass-bg: rgba(26, 26, 46, 0.7);
+            --glass-border: rgba(139, 92, 246, 0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ============================================
+           ANIMATED STARFIELD BACKGROUND
+           ============================================ */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            opacity: var(--opacity);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--opacity); transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.8); }
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, white, transparent);
+            animation: shoot var(--duration) linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0); opacity: 1; }
+            100% { transform: translateX(-500px) translateY(500px); opacity: 0; }
+        }
+
+        /* ============================================
+           HEADER
+           ============================================ */
+        .header {
+            position: relative;
+            padding: 2rem;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-purple-light), var(--accent-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 40px var(--glow-purple);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--accent-purple-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-blue-light);
+            text-decoration: underline;
+        }
+
+        /* ============================================
+           APPEAL FORM CONTAINER
+           ============================================ */
+        .appeal-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        .appeal-form {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px var(--glow-purple);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 30px var(--glow-purple);
+            transform: scale(1.02);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px var(--glow-purple);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        /* ============================================
+           NOTIFICATION
+           ============================================ */
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideUp 0.5s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .appeal-container {
+                padding: 1rem;
+            }
+
+            .appeal-form {
+                padding: 1.5rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1 id="server-name">Moonveil SMP</h1>
+        <h2>Appeal Form</h2>
+        <a href="index.html" class="back-link">← Back to Store</a>
+    </header>
+
+    <!-- Appeal Form -->
+    <div class="appeal-container">
+        <form class="appeal-form" id="appeal-form" onsubmit="submitAppeal(event)">
+            <div class="form-group">
+                <label for="minecraft-username">Minecraft Username</label>
+                <input type="text" id="minecraft-username" name="minecraft-username" required placeholder="Steve">
+            </div>
+
+            <div class="form-group">
+                <label for="appeal-type">Appeal Type</label>
+                <select id="appeal-type" name="appeal-type" required>
+                    <option value="">Select appeal type...</option>
+                    <option value="ban">Ban Appeal</option>
+                    <option value="mute">Mute Appeal</option>
+                    <option value="kick">Kick Appeal</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="punishment-reason">Reason for Punishment</label>
+                <input type="text" id="punishment-reason" name="punishment-reason" required placeholder="The reason you were punished">
+            </div>
+
+            <div class="form-group">
+                <label for="appeal-reason">Why should we accept your appeal?</label>
+                <textarea id="appeal-reason" name="appeal-reason" required placeholder="Explain why you believe your punishment should be overturned..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="additional-info">Additional Information (Optional)</label>
+                <textarea id="additional-info" name="additional-info" placeholder="Any other information you'd like to provide..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address (Optional)</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com">
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">Submit Appeal</button>
+            <p class="form-info">Your appeal will be sent to our staff team via Discord and email (if provided)</p>
+        </form>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const serverName = "Moonveil SMP";
+
+        // Apply server name to the page
+        document.getElementById('server-name').textContent = serverName;
+
+        // Submit appeal
+        async function submitAppeal(event) {
+            event.preventDefault();
+            console.log('submitAppeal called');
+            
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            const formData = {
+                minecraftUsername: document.getElementById('minecraft-username').value,
+                appealType: document.getElementById('appeal-type').value,
+                punishmentReason: document.getElementById('punishment-reason').value,
+                appealReason: document.getElementById('appeal-reason').value,
+                additionalInfo: document.getElementById('additional-info').value,
+                email: document.getElementById('email').value
+            };
+
+            console.log('Form data:', formData);
+
+            try {
+                const response = await fetch('/api/submit-appeal', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showNotification('Appeal submitted successfully!');
+                    document.getElementById('appeal-form').reset();
+                } else {
+                    showNotification(result.error || 'Error submitting appeal');
+                }
+            } catch (error) {
+                console.error('Error submitting appeal:', error);
+                showNotification('Error submitting appeal. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Appeal';
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Create starfield
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            const starCount = 200;
+            
+            // Create regular stars
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+                star.style.setProperty('--opacity', Math.random() * 0.7 + 0.3);
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starfield.appendChild(star);
+            }
+            
+            // Create shooting stars
+            for (let i = 0; i < 5; i++) {
+                const shootingStar = document.createElement('div');
+                shootingStar.className = 'shooting-star';
+                shootingStar.style.left = Math.random() * 50 + 50 + '%';
+                shootingStar.style.top = Math.random() * 50 + '%';
+                shootingStar.style.setProperty('--duration', (Math.random() * 5 + 5) + 's');
+                shootingStar.style.animationDelay = Math.random() * 10 + 's';
+                starfield.appendChild(shootingStar);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStarfield();
+            loadConfig();
+        });
+    </script>
+</body>
+</html>
