@@ -24,7 +24,7 @@
          '4H 15M 30S'      → 4 hours 15 minutes 30 seconds
          '1W 2D 4H 30M'    → 1 week 2 days 4 hours 30 minutes
     ═══════════════════════════════════════════ */
-    const MAINTENANCE          = false;
+    const MAINTENANCE          = true;
     const MAINTENANCE_DURATION = '7D'; /* e.g. '2H 30M' */
   </script>
   <style>
@@ -339,6 +339,8 @@
     .store-tab:hover { border-color: var(--border-h); color: var(--text); }
     .store-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
+    .store-wrapper { display: none; }
+    .store-wrapper.active { display: block; }
     .store-section { display: none; padding: 0 1.5rem 4rem; }
     .store-section.active { display: block; }
     .store-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
